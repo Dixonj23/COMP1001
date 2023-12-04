@@ -114,5 +114,7 @@ void routine2(float alpha, float beta) {
 }
 
 
+void routine1_vec(float alpha, float beta) {
 
+}
 
