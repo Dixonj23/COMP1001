@@ -14,7 +14,7 @@
 #include <limits.h>
 #include <pmmintrin.h>
 #include <immintrin.h>
-#include dirent.h
+#include <dirent.h>
 
 //function declarations
 void Gaussian_Blur();
