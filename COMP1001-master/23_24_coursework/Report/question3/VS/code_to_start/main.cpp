@@ -14,6 +14,7 @@
 #include <limits.h>
 #include <pmmintrin.h>
 #include <immintrin.h>
+#include dirent.h
 
 //function declarations
 void Gaussian_Blur();
@@ -70,14 +71,33 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	read_image(argv[1]);    // read image from disc
+	//open the input_images folder
 
-	Gaussian_Blur();        // blur the image (reduce noise)
-	Sobel();                // apply edge detection
+	DIR* dir;
+	struct dirent* ent;
+	if ((dir = opendir(argv[1])) != NULL) {
+		if (ent->d_type == DT_REG) {
+			char inputPath[64];
+			char outputPath[64];
+			
+			sprintf(inputPath, "%s/%s", argv[1], ent->d_name);
+			sprintf(outputPath, "%s/blurred_%s", argv[2], ent->d_name);
 
-	write_image2(argv[2], filt);    // store output image to the disc
-	write_image2(argv[3], gradient);    // store output image to the disc
+			read_image(argv[1]);    // read image from disc
 
+			Gaussian_Blur();        // blur the image (reduce noise)
+			Sobel();                // apply edge detection
+
+			write_image2(argv[2], filt);    // store output image to the disc
+			write_image2(argv[3], gradient);    // store output image to the disc
+		}
+		closedir(dir);
+	}
+	else {
+		perror("Cannot open input folder");
+		return EXIT_FAILURE;
+	}
+	
 	return 0;
 }
 
