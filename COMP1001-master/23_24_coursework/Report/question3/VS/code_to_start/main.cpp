@@ -76,20 +76,24 @@ int main(int argc, char* argv[]) {
 	DIR* dir;
 	struct dirent* ent;
 	if ((dir = opendir(argv[1])) != NULL) {
-		if (ent->d_type == DT_REG) {
-			char inputPath[64];
-			char outputPath[64];
-			
-			sprintf(inputPath, "%s/%s", argv[1], ent->d_name);
-			sprintf(outputPath, "%s/blurred_%s", argv[2], ent->d_name);
+		while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_type == DT_REG) {
+				char inputPath[255];
+				char outputPath1[255];
+				char outputPath2[255];
 
-			read_image(argv[1]);    // read image from disc
+				sprintf(inputPath, "%s/%s", argv[1], ent->d_name);
+				sprintf(outputPath1, "%s/blurred_%s", argv[2], ent->d_name);
+				sprintf(outputPath2, "%s/edge_%s", argv[3], ent->d_name);
 
-			Gaussian_Blur();        // blur the image (reduce noise)
-			Sobel();                // apply edge detection
+				read_image(inputPath);    // read image from disc
 
-			write_image2(argv[2], filt);    // store output image to the disc
-			write_image2(argv[3], gradient);    // store output image to the disc
+				Gaussian_Blur();        // blur the image (reduce noise)
+				Sobel();                // apply edge detection
+
+				write_image2(outputPath1, filt);    // store output image to the disc
+				write_image2(outputPath2, gradient);    // store output image to the disc
+			}
 		}
 		closedir(dir);
 	}
