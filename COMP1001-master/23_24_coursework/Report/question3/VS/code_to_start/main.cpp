@@ -26,9 +26,9 @@ void openfile(const char* filename, FILE** finput);
 int getint(FILE* fp);
 
 //CRITICAL POINT: images' paths - You need to change these paths
-#define IN "C:\\Users\\vboxuser\\source\\repos\\image_processing\\image_processing\\input_images\\a1.pgm"
-#define OUT "C:\\Users\\vboxuser\\source\\repos\\image_processing\\image_processing\\output_images\\blurred.pgm"
-#define OUT2 "C:\\Users\\vboxuser\\source\\repos\\image_processing\\image_processing\\output_images\\edge_detection.pgm"
+#define IN "C:\Users\mypc\OneDrive\Documents\GitHub\COMP1001\COMP1001-master\23_24_coursework\Report\question3\VS\code_to_start\input_images\a1.pgm"
+#define OUT "C:\Users\mypc\OneDrive\Documents\GitHub\COMP1001\COMP1001-master\23_24_coursework\Report\question3\VS\code_to_start\output_images\blurred.pgm"
+#define OUT2 "C:\Users\mypc\OneDrive\Documents\GitHub\COMP1001\COMP1001-master\23_24_coursework\Report\question3\VS\code_to_start\output_images\edge_detection.pgm"
 
 //IMAGE DIMENSIONS
 #define M 512  //cols
@@ -64,21 +64,22 @@ const signed char GyMask[3][3] = {
 char header[100];
 errno_t err;
 
-int main() {
+int main(int argc, char* argv[]) {
+	if (argc != 4) {
+		fprintf(stderr, "Usage: %s <input_image_path> <output_blurred_path> <output_edge_detection_path>\n", argv[0]);
+		return 1;
+	}
 
+	read_image(argv[1]);    // read image from disc
 
-	read_image(IN);//read image from disc
+	Gaussian_Blur();        // blur the image (reduce noise)
+	Sobel();                // apply edge detection
 
-	Gaussian_Blur(); //blur the image (reduce noise)
-	Sobel(); //apply edge detection
-
-	write_image2(OUT, filt); //store output image to the disc
-	write_image2(OUT2, gradient); //store output image to the disc
-
+	write_image2(argv[2], filt);    // store output image to the disc
+	write_image2(argv[3], gradient);    // store output image to the disc
 
 	return 0;
 }
-
 
 
 
