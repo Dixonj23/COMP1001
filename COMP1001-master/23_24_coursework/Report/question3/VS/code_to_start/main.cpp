@@ -170,6 +170,42 @@ void Sobel() {
 
 }
 
+void SobelVectorised() {
+	int row, col, rowOffset, colOffset;
+	__m128i Gx, Gy, pixel, mask;
+
+	for (row = 1; row < N - 1; row++) {
+		for (col = 1; col < M - 1; col += 4) {
+
+			Gx = _mm_setzero_si128();
+			Gy = _mm_setzero_si128();
+
+			for (rowOffset = -1; rowOffset <= 1; rowOffset++) {
+				for (colOffset = -1; colOffset <= 1; colOffset++) {
+
+					pixel = _mm_loadu_si123((__m128*) & filt[M * (row + rowOffset) + col + colOffset]);
+					mask = _mm_set1_epi32(GxMask[rowOffset + 1][colOffset + 1]);
+
+					Gx = _mm_add_epi32(Gx, _mm_mullo_epi32(pixel, mask));
+
+					mask = _mm_set1_epi32(GyMask[rowOffset + 1][colOffset + 1])
+					Gy = _mm_add_epi32(Gy, _mm_mullo_epi32(pixel, mask));
+				}
+			}
+		}
+
+		//gradient strength
+		Gx = _mm_mullo_epi32(Gx, Gx);
+		Gy = _mm_mullo_epi32(Gy, Gy);
+
+		__m128i gradient_strength = _mm_add_epi32(Gx, Gy);
+		gradient_strength =
+			_mm_sqrt_epi32(gradient_strength);
+
+		//store result
+
+		_mm_storeu_si128((__m128i*) & gradient[M * row + col], _mm_packus_epi32(gradient_strength, _mm_setzero_si128()));
+}
 
 
 
