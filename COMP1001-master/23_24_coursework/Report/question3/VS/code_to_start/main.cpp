@@ -141,36 +141,6 @@ void Gaussian_Blur() {
 
 
 void Sobel() {
-
-	int row, col, rowOffset, colOffset;
-	int Gx, Gy;
-
-	/*---------------------------- Determine edge directions and gradient strengths -------------------------------------------*/
-	for (row = 1; row < N - 1; row++) {
-		for (col = 1; col < M - 1; col++) {
-
-			Gx = 0;
-			Gy = 0;
-
-			/* Calculate the sum of the Sobel mask times the nine surrounding pixels in the x and y direction */
-			for (rowOffset = -1; rowOffset <= 1; rowOffset++) {
-				for (colOffset = -1; colOffset <= 1; colOffset++) {
-
-					Gx += filt[M * (row + rowOffset) + col + colOffset] * GxMask[rowOffset + 1][colOffset + 1];
-					Gy += filt[M * (row + rowOffset) + col + colOffset] * GyMask[rowOffset + 1][colOffset + 1];
-				}
-			}
-
-			gradient[M * row + col] = (unsigned char)sqrt(Gx * Gx + Gy * Gy); /* Calculate gradient strength		*/
-			//gradient[row][col] = abs(Gx) + abs(Gy); // this is an optimized version of the above
-
-		}
-	}
-
-
-}
-
-void SobelVectorised() {
 	int row, col, rowOffset, colOffset;
 	__m128i Gx, Gy, pixel, mask;
 
